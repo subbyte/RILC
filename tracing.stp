@@ -1,0 +1,15 @@
+# for each function call, print "F callee_name:caller_ret_addr"
+probe process(@1).function("*")
+{
+    printf ("F %s:0x%x\n", probefunc (), ustack (1))
+}
+
+#probe process(@1).plt
+#probe process(@1).library("*").function("*")
+#{
+#    printf ("L %s:0x%x\n", probefunc (), ustack (1))
+#}
+
+probe process(@1).syscall {
+    printf("S %d\n", $syscall)
+}
