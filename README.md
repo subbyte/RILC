@@ -7,17 +7,17 @@ Description of RILC: https://speakerdeck.com/subbyte/the-evolution-of-stack-cont
 
 
 #### Stack Overwritten Structure
-| before            | after                 |
-| :---------------: | :-------------------: |
-| (high address)    | (high address)        |
-| ................. | ..................... |
-| ................. | [addr -> "/bin/sh"]   |
-| ................. | [addr -> exit()]      |
-| [ret (saved EIP)] | [addr -> system()]    |
-| [saved registers] | ..................... |
-| [local vars]      | ..................... |
-| ................. | ..................... |
-| (low address)     | (low address)         |
+| before          | after         |
+| :-------------: | :-----------: |
+| (high address)  | (high address)|
+| ............... | ..............|
+| ............... | & "/bin/sh"   |
+| [arguments]     | & exit()      |
+| return addr     | & system()    |
+| frame pointer   | ............. |
+| [local vars]    | ............. |
+| ............... | ............. |
+| (low address)   | (low address) |
 
 
 #### Exploit Prerequisites
@@ -27,7 +27,7 @@ Description of RILC: https://speakerdeck.com/subbyte/the-evolution-of-stack-cont
 sysctl -w kernel.randomize_va_space=0
 ```
 - turn off stack guard when compiling: -fno-stack-protector
-- NO need to turn off execstack (no code on stack in RILC)
+- NO need to turn off execstack when compiling (no code on stack in RILC)
 
 
 #### How to get "/bin/sh"
