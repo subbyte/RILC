@@ -6,38 +6,47 @@ return-into-libc demonstration
 Description of RILC: https://speakerdeck.com/subbyte/the-evolution-of-stack-control-flow-attacks
 
 
-## Stack Overwritten Guide
+#### Stack Overwritten Structure
+| before            | after                 |
+| :---------------: | :-------------------: |
+| (high address)    | (high address)        |
+| ................. | ..................... |
+| ................. | [addr -> "/bin/sh"]   |
+| ................. | [addr -> exit()]      |
+| [ret (saved EIP)] | [addr -> system()]    |
+| [saved registers] | ..................... |
+| [local vars]      | ..................... |
+| ................. | ..................... |
+| (low address)     | (low address)         |
 
-    before                  after
-            (high address)
-.................   ......................
-.................   [pointer to "/bin/sh"]
-.................   [pointer to exit()   ]
-[ret (saved EIP)]   [pointer to system() ]
-[saved registers]   ......................
-[local vars     ]   ......................
-.................   ......................
-            (low address)
 
+#### Exploit Prerequisites
 
-## Prerequisites
-- turn off ASLR: # sysctl -w kernel.randomize_va_space=0
+- turn off ASLR (root):
+```bash
+sysctl -w kernel.randomize_va_space=0
+```
 - turn off stack guard when compiling: -fno-stack-protector
 - NO need to turn off execstack (no code on stack in RILC)
 
 
-## How to get "/bin/sh"
-We declare a environment variable for demonstration purposes.
-    $ export VARSHELL="     /bin/sh"
-Space is very important to locate "/bin/sh" right in the future.
-Read exploit.c for more details.
-Use strace to debug if your exploit does not succeed.
+#### How to get "/bin/sh"
+
+Declare an environment variable:
+```bash
+export VARSHELL="     /bin/sh"
+```
+- beginning spaces are very important to locate "/bin/sh" in the future.
+- use gdb to locate the exact address of "/bin/sh".
+- debug your exploit with strace.
 
 
-## Trace the exploit
+#### Trace the Exploit
 Using SystemTap to trace function/library/system calls:
-    $ stap -v tracing.stp vulp -o tracefile
+```bash
+stap -v tracing.stp vulp -o tracefile
+```
 
 
-## Tested environment
+#### Tested Environments
 The demonstration package is tested successful on Fedora 19
