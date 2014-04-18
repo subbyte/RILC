@@ -57,6 +57,13 @@ export VARSHELL="     /bin/sh"
 (gdb) x/s ADDR
 ```
 
+#### Other useful gdb commands
+```
+(gdb) info frame
+(gdb) p system
+(gdb) p exit
+```
+
 
 #### Trace the Exploit
 Using SystemTap to trace function/library/system calls
